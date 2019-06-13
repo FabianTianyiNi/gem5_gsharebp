@@ -53,15 +53,15 @@ class GshareBP: public BPredUnit
 
         unsigned historyRegisterMask;
 
-        std::vector<SatCounter> localCtrs;
+        std::vector<SatCounter> PHTCtrs;
 
-        unsigned localPredictorSize;
+        unsigned PHTPredictorSize;
 
-        unsigned localCtrBits;
+        unsigned PHTCtrBits;
 
-        unsigned localPredictorMask;
+        //unsigned localPredictorMask;
 
-        unsigned localThreshold;
+        unsigned PHTThreshold;
 
 }
 
