@@ -110,7 +110,7 @@ GshareBP::uncondBranch(ThreadID tid, Addr pc, void * &bp_history)
     // Create BPHistory and pass it back to be recorded.
     BPHistory *history = new BPHistory;
     history->globalHistory = globalHistory[tid];
-    history->finalPred = true;
+    history->finalPredictionResult = true;
     bp_history = static_cast<void*>(history);
     updateGlobalHistReg(tid, true);
 }
