@@ -11,7 +11,7 @@
 
 #include <vector>
 
-#include "base/sat_counter.hh"
+#include "cpu/pred/sat_counter.hh"
 #include "base/types.hh"
 #include "cpu/pred/bpred_unit.hh"
 #include "params/GshareBP.hh"
@@ -44,7 +44,7 @@ class GshareBP: public BPredUnit
                 true: predict taken
                 false: predict not-taken
             */
-            bool finalPred;
+            bool finalPredictionResult;
         };
 
         unsigned instShiftAmt;
@@ -52,6 +52,10 @@ class GshareBP: public BPredUnit
         unsigned globalHistory;
 
         unsigned historyRegisterMask;
+
+        unsigned globalHistoryBits;
+
+        unsigned globalPredictorSize
 
         std::vector<SatCounter> PHTCtrs;
 
@@ -63,6 +67,6 @@ class GshareBP: public BPredUnit
 
         unsigned PHTThreshold;
 
-}
+};
 
 #endif // __CPU_PRED_GSHARE_PRED_HH__
