@@ -13,20 +13,13 @@
 
 GshareBP::GshareBP(const GshareBPParams *params)
     : BPredUnit(params),
-      instShiftAmt(params->instShiftAmt),
+      //instShiftAmt(params->instShiftAmt),
       globalHistory(params->numThreads, 0), //initilize the global History registor to 0
       globalHistoryBits(ceilLog2(params->globalPredictorSize)),  //initilize the size of the global history register to be log2(localPredictorSize)
       globalPredictorSize(params->globalPredictorSize),
       PHTPredictorSize(params->PHTPredictorSize),
       PHTCtrBits(params->PHTCtrBits)
 {
-    if (!isPowerOf2(PHTPredictorSize)) {
-        fatal("Invalid local predictor size!\n");
-    }
-
-    if (!isPowerOf2(globalPredictorSize)) {
-        fatal("Invalid global predictor size!\n");
-    }
 
     historyRegisterMask = mask(globalHistoryBits); //this is for the global history table mask
 
@@ -40,6 +33,8 @@ GshareBP::GshareBP(const GshareBPParams *params)
     PHTThreshold = (ULL(1) << (PHTCtrBits - 1)) - 1;
     
 }
+
+
 
 // function of lookup()
 bool
@@ -55,7 +50,7 @@ GshareBP::lookup(ThreadID tid, Addr branch_addr, void * &bp_history)
     BPHistory *history = new BPHistory;
     history->finalPredictionResult = final_Prediction;
     history->globalHistory = globalHistory[tid];
-    bp_history = <void*>(history);
+    bp_history = static_cast<void*>(history);
 
     return final_Prediction;
     
@@ -63,11 +58,11 @@ GshareBP::lookup(ThreadID tid, Addr branch_addr, void * &bp_history)
 
 // function of update() every time system makes a prediction, update the result to the currrent table
 void
-GshareBP::update(ThreadID tid, Addr branch_addr, bool taken,
-                     void *bp_history, bool squashed)
+GshareBP::update(ThreadID tid, Addr branch_addr, bool taken, void *bp_history, bool squashed)
 {
     if(bp_history)
     {
+	BPHistory *history = static_cast<BPHistory *>(bp_history);
         unsigned PHTCtrsIdx = (branch_addr ^ globalHistory[tid]) & historyRegisterMask;
         assert(PHTCtrsIdx < PHTPredictorSize);
         if(taken)

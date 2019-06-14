@@ -16,6 +16,7 @@
 #include "cpu/pred/bpred_unit.hh"
 #include "params/GshareBP.hh"
 
+
 class GshareBP: public BPredUnit
 {
     public:
@@ -28,14 +29,14 @@ class GshareBP: public BPredUnit
 
         void btbUpdate(ThreadID tid, Addr branch_addr, void * &bp_history);
 
-        void update(ThreadID tid, Addr branch_addr, bool taken, void *bp_history,
-                bool squashed, const StaticInstPtr & inst, Addr corrTarget);
+        void update(ThreadID tid, Addr branch_addr, bool taken, void *bp_history, bool squashed);
 
         void squash(ThreadID tid, void *bp_history);
 
     private:
 
          void updateGlobalHistReg(ThreadID tid, bool taken);
+
 
          struct BPHistory {
             unsigned globalHistory;
@@ -47,15 +48,14 @@ class GshareBP: public BPredUnit
             bool finalPredictionResult;
         };
 
-        unsigned instShiftAmt;
+	std::vector<unsigned> globalHistory;
 
-        unsigned globalHistory;
 
         unsigned historyRegisterMask;
 
         unsigned globalHistoryBits;
 
-        unsigned globalPredictorSize
+        unsigned globalPredictorSize;
 
         std::vector<SatCounter> PHTCtrs;
 
