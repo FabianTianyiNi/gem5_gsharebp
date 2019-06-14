@@ -60,34 +60,60 @@ GshareBP::lookup(ThreadID tid, Addr branch_addr, void * &bp_history)
 void
 GshareBP::update(ThreadID tid, Addr branch_addr, bool taken, void *bp_history, bool squashed)
 {
-    if(bp_history)
-    {
-	BPHistory *history = static_cast<BPHistory *>(bp_history);
-        unsigned PHTCtrsIdx = (branch_addr ^ globalHistory[tid]) & historyRegisterMask;
-        assert(PHTCtrsIdx < PHTPredictorSize);
-        if(taken)
-        {
-            PHTCtrs[PHTCtrsIdx].increment();
-        }
-        else
-        {
-            PHTCtrs[PHTCtrsIdx].decrement();
-        }
+    assert(bp_history);
 
-        // case: the result was mis-predicted
-        if(squashed)
-        {
-            if(taken)
-				globalHistory[tid] = (history->globalHistory << 1) | 1;
-			else
-				globalHistory[tid] = (history->globalHistory << 1);
-			globalHistory[tid] &= historyRegisterMask;
-        }
-        else
-		{
-			delete history;
-		}
+    BPHistory *history = static_cast<BPHistory *>(bp_history);
+
+    unsigned PHTCtrsIdx = (branch_addr ^ globalHistory[tid]) & historyRegisterMask;
+
+    assert(PHTCtrsIdx < PHTPredictorSize);
+
+    if(squashed)
+    {
+        if(taken)
+			globalHistory[tid] = (history->globalHistory << 1) | taken;
+		else
+			globalHistory[tid] = (history->globalHistory << 1);
+		globalHistory[tid] &= historyRegisterMask;
+        return;
     }
+
+    if(taken)
+    {
+        PHTCtrs[PHTCtrsIdx].increment();
+    } else{
+        PHTCtrs[PHTCtrsIdx].decrement();
+    }
+
+    delete history;
+    // if(bp_history)
+    // {
+	//     BPHistory *history = static_cast<BPHistory *>(bp_history);
+    //     unsigned PHTCtrsIdx = (branch_addr ^ globalHistory[tid]) & historyRegisterMask;
+    //     assert(PHTCtrsIdx < PHTPredictorSize);
+    //     if(taken)
+    //     {
+    //         PHTCtrs[PHTCtrsIdx].increment();
+    //     }
+    //     else
+    //     {
+    //         PHTCtrs[PHTCtrsIdx].decrement();
+    //     }
+
+    //     // case: the result was mis-predicted
+    //     if(squashed)
+    //     {
+    //         if(taken)
+	// 			globalHistory[tid] = (history->globalHistory << 1) | 1;
+	// 		else
+	// 			globalHistory[tid] = (history->globalHistory << 1);
+	// 		globalHistory[tid] &= historyRegisterMask;
+    //     }
+    //     else
+	// 	{
+	// 		delete history;
+	// 	}
+    // }
 }
 
 
