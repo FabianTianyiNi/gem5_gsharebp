@@ -9,34 +9,56 @@
 
 #include "params/LRURP.hh"
 
+
+
+
+
+
+LRUIPVRP::LRUVRPReplData::LRUVRPReplData(
+    const uint64_t index, std::shared_ptr<LRUList> list)
+    : index(index), list(list)
+{
+}
+
+
 LRUIPVRP::LRUIPVRP(const Params *p)
     : BaseReplacementPolicy(p)
 {
+    ipv = {0,0,1,0,3,0,1,2,1,0,5,1,0,0,1,11,13};
 }
 
 void
 LRUIPVRP::invalidate(const std::shared_ptr<ReplacementData>& replacement_data)
 const
 {
-    // Reset last touch timestamp
-    std::static_pointer_cast<LRUReplData>(
-        replacement_data)->lastTouchTick = Tick(0);
+    
 }
 
-void
+void    
 LRUIPVRP::touch(const std::shared_ptr<ReplacementData>& replacement_data) const
 {
     // Update last touch timestamp
-    std::static_pointer_cast<LRUReplData>(
-        replacement_data)->lastTouchTick = curTick();
+    //std::static_pointer_cast<LRUReplData>(replacement_data)->lastTouchTick = curTick();
+
+    std::shared_ptr<LRUVRPReplData> LRUIPV_replacement_data = std::static_pointer_cast<LRUVRPReplData>(replacement_data);
+    LRUList* list = LRUIPV_replacement_data->list.get();
+
+    uint64_t list_index = LRUIPV_replacement_data->index;
+
+    do{
+
+    } while(list_index >= 0 || list_index < 16);
 }
 
 void
 LRUIPVRP::reset(const std::shared_ptr<ReplacementData>& replacement_data) const
 {
     // Set last touch timestamp
-    std::static_pointer_cast<LRUReplData>(
-        replacement_data)->lastTouchTick = curTick();
+    //std::static_pointer_cast<LRUReplData>(replacement_data)->lastTouchTick = curTick();
+    //std::shared_ptr<LRUVRPReplData> LRUIPV_replacement_data = std::static_pointer_cast<LRUVRPReplData>(replacement_data);
+
+    // THE NEW INCOMING BLOCK WILL BE INSERTED INTO THE POSITION 13
+
 }
 
 ReplaceableEntry*
@@ -46,13 +68,10 @@ LRUIPVRP::getVictim(const ReplacementCandidates& candidates) const
     assert(candidates.size() > 0);
 
     // Visit all candidates to find victim
-    ReplaceableEntry* victim = candidates[0];
+    ReplaceableEntry* victim = candidates[13];
     for (const auto& candidate : candidates) {
         // Update victim entry if necessary
-        if (std::static_pointer_cast<LRUReplData>(
-                    candidate->replacementData)->lastTouchTick <
-                std::static_pointer_cast<LRUReplData>(
-                    victim->replacementData)->lastTouchTick) {
+        if (std::static_pointer_cast<LRUReplData>(candidate->replacementData)->lastTouchTick < std::static_pointer_cast<LRUReplData>(victim->replacementData)->lastTouchTick) {
             victim = candidate;
         }
     }
