@@ -7,32 +7,65 @@ struct LRUIPVRPParams; //  LRUIPVRP
 
 class LRUIPVRP : public BaseReplacementPolicy
 {
+
+  private:
+
+  typeof std::vector<bool> LRUList;
+
+  /**
+  set for the index of the nodes in the linked list
+  **/
+  const uint64_t numNodes;
+
+
+  /**
+  Holds the latest temporary list instance created by instantiateEntry().
+  **/
+
+  LRUList* listinstance;
+
+
   protected:
     /** LRU-specific implementation of replacement data. */
-    struct LRUReplData : ReplacementData
+    struct LRUVRPReplData : ReplacementData
     {
-        /** Tick on which the entry was last touched. */
-        Tick lastTouchTick;
+        // /** Tick on which the entry was last touched. */
+        // Tick lastTouchTick;
+
+        // /**
+        //  * Default constructor. Invalidate data.
+        //  */
+        // LRUVRPReplData() : lastTouchTick(0) {}
+
+        const uint64_t index;
 
         /**
-         * Default constructor. Invalidate data.
+         * Shared list pointer. A list share between the nodes in the list, so
+         * that accesses to a replacement data entry updates the LRUIPV bits of all other replacement data entries in its set
          */
-        LRUReplData() : lastTouchTick(0) {}
+        std::shared_ptr<LRUList> list;
+
+        /**
+        default constructor
+        
+        */
+        LRUVRPReplData(const uint64_t index, std::shared_ptr<LRUList> list);
+      
     };
 
   public:
     /** Convenience typedef. */
-    typedef LRURPParams Params;
+    typedef LRUIPVRPParams Params;
 
     /**
      * Construct and initiliaze this replacement policy.
      */
-    LRURP(const Params *p);
+    LRUIPVRP(const Params *p);
 
     /**
      * Destructor.
      */
-    ~LRURP() {}
+    ~LRUIPVRP() {}
 
     /**
      * Invalidate replacement data to set it as the next probable victim.
