@@ -3,6 +3,7 @@
 
 #include "mem/cache/replacement_policies/base.hh"
 
+
 struct LRUIPVRPParams; //  LRUIPVRP
 
 class LRUIPVRP : public BaseReplacementPolicy
@@ -14,7 +15,7 @@ class LRUIPVRP : public BaseReplacementPolicy
 
 
         int index;
-	      LRUIPVReplData() {} 
+	LRUIPVReplData() {} 
       
     };
 
