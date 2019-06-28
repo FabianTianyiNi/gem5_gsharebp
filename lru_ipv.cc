@@ -49,7 +49,7 @@ LRUIPVRP::reset(const std::shared_ptr<ReplacementData>& replacement_data) const
     }
 
     std::shared_pointer_cast<LRUIPVReplData>(replacement_data)->index = 13;
-    recency_stack[13] = replacement_data;
+    recency_stack[13] = std::shared_pointer_cast<LRUIPVReplData>(replacement_data)->index;
 }
 
 ReplaceableEntry*
@@ -57,7 +57,7 @@ LRUIPVRP::getVictim(const ReplacementCandidates& candidates) const
 {
     // There must be at least one replacement candidate
     assert(candidates.size() > 0);
-    int i = 1
+    int i = 0;
     for (const auto& candidate : candidates)
     {
         //candidates[i]->index = recency_stack[i];
@@ -70,7 +70,7 @@ LRUIPVRP::getVictim(const ReplacementCandidates& candidates) const
     ReplaceableEntry* victim = candidates[0];
     for (const auto& candidate : candidates) {
         // Update victim entry if necessary
-        if (std::static_pointer_cast<LRUIPVReplData>(candidate->replacementData)->lastTouchTick < std::static_pointer_cast<LRUIPVReplData>(victim->replacementData)->lastTouchTick) {
+        if (std::static_pointer_cast<LRUIPVReplData>(candidate->replacementData)->index == 16 ) {
             victim = candidate;
         }
     }

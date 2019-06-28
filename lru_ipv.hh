@@ -14,7 +14,7 @@ class LRUIPVRP : public BaseReplacementPolicy
 
 
         int index;
-	      LRUIPVReplData();
+	      LRUIPVReplData() {} 
       
     };
 
