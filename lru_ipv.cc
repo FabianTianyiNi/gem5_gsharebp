@@ -2,7 +2,7 @@
   LRUIPVRP
   **/
 
-#include "mem/cache/replacement_policies/lru_rp.hh"
+#include "mem/cache/replacement_policies/lru_ipv.hh"
 
 #include <cassert>
 #include <memory>
@@ -30,7 +30,7 @@ LRUIPVRP::touch(const std::shared_ptr<ReplacementData>& replacement_data) const
     //THIS FUNCTION IS FOR A HIT AND HOW THE MODEL ADJUSTS AFTERWARDS
     int replacement_data_index = std::shared_pointer_cast<LRUIPVReplData>(replacement_data)->index;
 
-    for (i = ipv[replacement_data_index];i < replacement_data_index; i++)
+    for (int i = ipv[replacement_data_index];i < replacement_data_index; i++)
     {
         recency_stack[i]++;
     }
@@ -70,7 +70,7 @@ LRUIPVRP::getVictim(const ReplacementCandidates& candidates) const
     ReplaceableEntry* victim = candidates[0];
     for (const auto& candidate : candidates) {
         // Update victim entry if necessary
-        if (std::static_pointer_cast<LRUReplData>(candidate->replacementData)->lastTouchTick < std::static_pointer_cast<LRUReplData>(victim->replacementData)->lastTouchTick) {
+        if (std::static_pointer_cast<LRUIPVReplData>(candidate->replacementData)->lastTouchTick < std::static_pointer_cast<LRUIPVReplData>(victim->replacementData)->lastTouchTick) {
             victim = candidate;
         }
     }
@@ -82,10 +82,10 @@ std::shared_ptr<ReplacementData>
 LRUIPVRP::instantiateEntry()
 {
     std::vector<int> recency_stack = {100,200,300,400,500,600,700,800,900,1000,1100,1200,1300,1400,1500,1600};
-    return std::shared_ptr<ReplacementData>(new LRUVRPReplData());
+    return std::shared_ptr<ReplacementData>(new LRUIPVRPParams());
 }
 
-LRURP*
+LRUIPVRP*
 LRUIPVRPParams::create()
 {
     return new LRUIPVRP(this);

@@ -1,5 +1,5 @@
-#ifndef __MEM_CACHE_REPLACEMENT_POLICIES_LRU_RP_HH__
-#define __MEM_CACHE_REPLACEMENT_POLICIES_LRU_RP_HH__
+#ifndef __MEM_CACHE_REPLACEMENT_POLICIES_LRU_IPV_HH__
+#define __MEM_CACHE_REPLACEMENT_POLICIES_LRU_IPV_HH__
 
 #include "mem/cache/replacement_policies/base.hh"
 
@@ -9,11 +9,12 @@ class LRUIPVRP : public BaseReplacementPolicy
 {
   protected:
     /** LRU-specific implementation of replacement data. */
-    struct LRUVRPReplData : ReplacementData
+    struct LRUIPVReplData : ReplacementData
     {
 
 
-        const uint64_t index;
+        int index;
+	LRUIPVReplData();
       
     };
 
@@ -75,4 +76,4 @@ class LRUIPVRP : public BaseReplacementPolicy
     std::shared_ptr<ReplacementData> instantiateEntry() override;
 };
 
-#endif // __MEM_CACHE_REPLACEMENT_POLICIES_LRU_RP_HH__
+#endif // __MEM_CACHE_REPLACEMENT_POLICIES_LRU_IPV_HH__
