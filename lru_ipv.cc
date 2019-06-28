@@ -10,43 +10,45 @@
 #include "params/LRURP.hh"
 
 
-
+int ipv[] = {0,0,1,0,3,0,1,2,1,0,5,1,0,0,1,11,13};
 
 LRUIPVRP::LRUIPVRP(const Params *p)
     : BaseReplacementPolicy(p)
 {
-    ipv = {0,0,1,0,3,0,1,2,1,0,5,1,0,0,1,11,13};
 }
 
 void
 LRUIPVRP::invalidate(const std::shared_ptr<ReplacementData>& replacement_data)
 const
 {
-    
+    std::shared_pointer_cast<LRUIPVReplData>(replacement_data)->index = 1000;
 }
 
 void    
 LRUIPVRP::touch(const std::shared_ptr<ReplacementData>& replacement_data) const
 {
     //THIS FUNCTION IS FOR A HIT AND HOW THE MODEL ADJUSTS AFTERWARDS
-    for (i = ipv[replacement_data->index];i < replacement_data->index; i++)
+    int replacement_data_index = std::shared_pointer_cast<LRUIPVReplData>(replacement_data)->index;
+
+    for (i = ipv[replacement_data_index];i < replacement_data_index; i++)
     {
         recency_stack[i]++;
     }
 
-    replacement_data->index = ipv[replacement_data->index];
+    std::shared_pointer_cast<LRUIPVReplData>(replacement_data)->index = ipv[replacement_data_index];
 }
 
 void
 LRUIPVRP::reset(const std::shared_ptr<ReplacementData>& replacement_data) const
 {
     // THIS FUNCTION IS FOR EVERY TIME YOU HAVE A NEW INSERTION AND HOW THE SYSTEM WILL ADJUST TO IT
+    int replacement_data_index = std::shared_pointer_cast<LRUIPVReplData>(replacement_data)->index;
     for (int i =13; i < 16; i++)
     {
         recency_stack[i]++;
     }
 
-    replacement_data->index = 13;
+    std::shared_pointer_cast<LRUIPVReplData>(replacement_data)->index = 13;
     recency_stack[13] = replacement_data;
 }
 
@@ -80,7 +82,7 @@ std::shared_ptr<ReplacementData>
 LRUIPVRP::instantiateEntry()
 {
     std::vector<int> recency_stack = {100,200,300,400,500,600,700,800,900,1000,1100,1200,1300,1400,1500,1600};
-    return std::shared_ptr<ReplacementData>(new LRUReplData());
+    return std::shared_ptr<ReplacementData>(new LRUVRPReplData());
 }
 
 LRURP*
